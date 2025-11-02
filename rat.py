@@ -109,6 +109,19 @@ def get_clients(domain):
     
     return jsonify({'clients': clients})
 
+# api_server.py'ye bu endpoint'i ekle
+@app.route('/api/check_domain/<domain>', methods=['GET'])
+def check_domain(domain):
+    """Domain kontrolü"""
+    c = db.cursor()
+    c.execute('SELECT COUNT(*) FROM clients WHERE domain=?', (domain,))
+    count = c.fetchone()[0]
+    
+    return jsonify({
+        'domain': domain,
+        'exists': count > 0,
+        'client_count': count
+    })
 @app.route('/api/admin/send_command', methods=['POST'])
 def send_command():
     """Admin: Komut gönder"""
